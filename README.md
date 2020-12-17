@@ -1,10 +1,11 @@
 # Joint Generative and Contrastive Learning for Unsupervised Person Re-identification
 
-Code for paper:[Joint Generative and Contrastive Learning for Unsupervised Person Re-identification]().
+Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised Person Re-identification](https://arxiv.org/pdf/2012.09071.pdf).
 
-This implementation is based on [MMT (ICLR 2020)](https://github.com/yxgeee/MMT) and [DG-Net (CVPR 2019)](https://github.com/NVlabs/DG-Net) .
-
+# Qualitative results
+#### Market1501
 ![demo](figs/supp1.png)
+#### Msmt17
+![demo](figs/supp3.png)
 
-
-Coming soon..
+Code coming soon...
