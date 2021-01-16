@@ -8,4 +8,12 @@ Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised P
 #### Msmt17
 ![demo](figs/supp3.png)
 
-Code coming soon...
+## Citation
+```bibtex
+@article{chen2020joint,
+  title={Joint Generative and Contrastive Learning for Unsupervised Person Re-identification},
+  author={Chen, Hao and Wang, Yaohui and Lagadec, Benoit and Dantcheva, Antitza and Bremond, Francois},
+  journal={arXiv preprint arXiv:2012.09071},
+  year={2020}
+}
+```
