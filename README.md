@@ -8,24 +8,8 @@ Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised P
 #### Msmt17
 ![demo](figs/supp3.png)
 
-Code coming soon...
 
 ## Installation
-
-### Install HMR for Mesh Estimation
-Please refer to [HMR](https://github.com/akanazawa/hmr).
-
-Requirements
-* Python 2.7
-* TensorFlow 1.3 
-```shell
-conda create --name py2 python=2.7
-source activate py2
-pip install tensorflow-gpu==1.3.0
-git clone https://github.com/akanazawa/hmr.git
-cd hmr
-pip install -r requirements.txt
-```
 
 ### Install GCL
 Requirements
@@ -55,11 +39,17 @@ ABMT/examples/data
     └── MSMT17_V1(or MSMT17_V2)
 ```
 
+### Install HMR for Mesh Estimation
+Download our extracted meshes from [Google Drive](https://drive.google.com/drive/folders/1N6c8G5m_RCY2TbwHd9C954qjW6wA8to2?usp=sharing).
+
+Or refer to [HMR](https://github.com/akanazawa/hmr) ro get meshes for ReID datasets.
+
 ## Train GCL
 Only support 1 GPU training for the moment.
 ### Stage 1: Warm up identity encoder
-Train a ResNet50 with an unsupervised method, for example, [JVTC](https://github.com/ljn114514/JVTC).
+Train a ResNet50 with an unsupervised method, for example, [JVTC](https://github.com/ljn114514/JVTC)(or download our trained models from [Google Drive](https://drive.google.com/drive/folders/1aOSPhVc0MlwSTBVMbY9V46dBS84WpXGq?usp=sharing)) and [MLC](https://github.com/kennethwdk/MLCReID).
 ### Stage 2: Warm up structure encoder and discriminator
+Adjust path for dataset, mesh, pre-trained identity encoder. 
 ```shell
 sh train_stage2_market.sh
 ```
