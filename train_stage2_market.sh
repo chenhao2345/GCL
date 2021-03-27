@@ -1,3 +1,13 @@
+#!/bin/sh
+
+#OAR -p gpu='YES' and gpumem>=20000
+#OAR -n market_init_JVTC_unsupervised
+#OAR -l//nodes=1/gpunum=1, walltime=48
+#OAR --notify mail:hao.chen@inria.fr
+
+module load cuda/10.0
+module load cudnn/7.4-cuda-10.0
+source activate pytorch1
 
 python examples/main.py \
     --name market_init_JVTC_unsupervised \

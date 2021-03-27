@@ -56,7 +56,17 @@ sh train_stage2_market.sh
 ```shell
 sh train_stage3_market.sh
 ```
-
+## TensorBoard Visualization
+### Stage 2: 
+For example,
+```shell
+tensorboard --logdir logs/market_init_JVTC_unsupervised/
+```
+### Stage 3: 
+For example,
+```shell
+tensorboard --logdir logs/market_init_JVTC_unsupervised/stage3/
+```
 
 ## Citation
 ```bibtex
