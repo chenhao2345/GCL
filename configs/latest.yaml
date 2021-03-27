@@ -24,10 +24,7 @@ gan_w: 1.0                         # the weight of gan loss
 recon_f_w: 5.0                    # the initial weight for appearance code reconstruction
 recon_x_cyc_w: 5.0                 # the initial weight for cycle reconstruction
 recon_x_w: 5.0                     # the initial weight for self-reconstruction
-id_w: 0.0                        # the weight of ID loss
-pid_w: 0.0                       # positive ID loss
-recon_id_w: 0.0                # the initial weight for ID reconstruction
-memory_id_w: 1.0                       # positive ID loss
+memory_id_w: 1.0                  # positive ID loss
 
 # memory
 momentum: 0.2                     # memory momentum alpha
