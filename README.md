@@ -16,8 +16,6 @@ Requirements
 * Python 3.6
 * Pytorch
 ```shell
-conda create --name py3 python=3.6
-source activate py3
 git clone https://github.com/chenhao2345/GCL
 cd GCL
 python setup.py develop
