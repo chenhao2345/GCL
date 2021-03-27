@@ -5,7 +5,6 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 from gcl.models.gan import AdaINGen, MsImageDis
 from gcl.models.memory import Memory
 from gcl.utils.gan_utils import get_model_list, vgg_preprocess, load_vgg16, get_scheduler
-from gcl.loss import ViewContrastiveLoss
 from torch.autograd import Variable
 import torch
 import torch.nn as nn
@@ -21,11 +20,11 @@ import torch.nn.functional as F
 # Load model
 
 class DGNet_Trainer(nn.Module):
-    def __init__(self, hyperparameters, id_net, idnet_fix, gpu_ids=[0]):
+    def __init__(self, hyperparameters, id_net, idnet_freeze, gpu_ids=[0]):
         super(DGNet_Trainer, self).__init__()
         lr_g = hyperparameters['lr_g']
         lr_d = hyperparameters['lr_d']
-        if idnet_fix:
+        if idnet_freeze:
             lr_g = hyperparameters['lr_g']
             lr_d = hyperparameters['lr_d']
 
@@ -34,7 +33,7 @@ class DGNet_Trainer(nn.Module):
                             fp16=False)
         self.dis = MsImageDis(3, hyperparameters['dis'], fp16=False)
         self.id_net = id_net
-        self.idnet_fix = idnet_fix
+        self.idnet_freeze = idnet_freeze
 
         # Setup the optimizers
         beta1 = hyperparameters['beta1']
@@ -68,7 +67,7 @@ class DGNet_Trainer(nn.Module):
         return torch.mean(torch.abs(diff[:]))
 
     def forward(self, x_img, x_mesh, x_mesh_nv):
-        if self.idnet_fix:
+        if self.idnet_freeze:
             self.id_net.eval()
         else:
             self.id_net.train()
@@ -107,7 +106,7 @@ class DGNet_Trainer(nn.Module):
         self.loss_gen_nv2recon_f = self.recon_criterion(feat_nv2recon, feat)
 
         # ID loss AND Tune the Generated image
-        if self.idnet_fix:
+        if self.idnet_freeze:
             self.memory_loss_id = 0
         else:
             self.memory_loss_id = self.memory(F.normalize(f), F.normalize(f_nv), index)
@@ -133,14 +132,13 @@ class DGNet_Trainer(nn.Module):
 
         self.loss_gen_total.backward()
         self.gen_opt.step()
-        if not self.idnet_fix:
+        if not self.idnet_freeze:
             self.id_opt.step()
-
-        if iterations %10 ==0 and not self.idnet_fix:
-            print('LR_id:{}\t'
-                  'L_memory_id:{:.3f}\t'
-                  .format(self.id_opt.param_groups[0]['lr'],
-                          hyperparameters['memory_id_w'] * self.memory_loss_id))
+            if iterations % 10 == 0:
+                print('LR_id:{}\t'
+                      'L_memory_id:{:.3f}\t'
+                      .format(self.id_opt.param_groups[0]['lr'],
+                              hyperparameters['memory_id_w'] * self.memory_loss_id))
 
     def sample(self, x_img, x_mesh, x_mesh_nv):
         self.eval()

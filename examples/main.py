@@ -203,7 +203,8 @@ def main_worker(args):
     num_gpu = torch.cuda.device_count()
 
     # Trainer
-    trainer = DGNet_Trainer(config, model_1, args.idnet_fix).cuda()
+    idnet_freeze = True if args.stage == 2 else False
+    trainer = DGNet_Trainer(config, model_1, idnet_freeze).cuda()
     iterations = trainer.resume(checkpoint_directory, hyperparameters=config) if args.resume else 0
 
     # Evaluator
@@ -376,7 +377,6 @@ if __name__ == '__main__':
     parser.add_argument('--print-freq', type=int, default=10)
     parser.add_argument('--eval-step', type=int, default=500)
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--idnet-fix", action="store_true")
     parser.add_argument('--stage', type=int, default=1)
     # path
     working_dir = osp.dirname(osp.abspath(__file__))

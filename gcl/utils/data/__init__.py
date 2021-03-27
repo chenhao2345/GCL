@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 from .base_dataset import BaseDataset, BaseImageDataset, BaseVideoDataset
 from .preprocessor import Preprocessor
-from .tracklet_dataset import TrackletDataset
 
 class IterLoader:
     def __init__(self, loader, length=None):

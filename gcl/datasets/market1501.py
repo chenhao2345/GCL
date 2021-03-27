@@ -4,7 +4,7 @@ import glob
 import re
 import shutil
 import os
-from ..utils.data import BaseImageDataset, TrackletDataset
+from ..utils.data import BaseImageDataset
 from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
 

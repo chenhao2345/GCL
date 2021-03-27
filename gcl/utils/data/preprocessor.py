@@ -116,9 +116,10 @@ class MeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
-        # self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
-        # self.imgs_dir = root + '/'  # cuhk03
+        try:
+            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
+        except:
+            self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
         self.index = index
 
     def __len__(self):
@@ -167,8 +168,10 @@ class AllMeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
-        # self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
+        try:
+            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
+        except:
+            self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
         self.index = index
         # print(self.imgs_dir)
 
