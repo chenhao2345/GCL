@@ -14,7 +14,7 @@ Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised P
 ### Install GCL
 Requirements
 * Python 3.6
-* Pytorch
+* Pytorch 1.2.0
 ```shell
 git clone https://github.com/chenhao2345/GCL
 cd GCL
