@@ -1,5 +1,4 @@
 # general
-batch_size: 8                    # BatchSize
 beta1: 0                         # Adam hyperparameter
 beta2: 0.999                     # Adam hyperparameter
 
@@ -9,7 +8,7 @@ snapshot_save_iter: 5000       # How often to save the checkpoint
 step_size: 10                # when to decay the learning rate
 log_iter: 100                     # How often do you want to log the training stats
 
-lr2: 0.00035                    # initial appearance encoder learning rate
+lr_id: 0.00035                    # initial appearance encoder learning rate
 lr_d: 0.0001                     # initial discriminator learning rate
 lr_g: 0.0001                     # initial generator (except appearance encoder) learning rate
 lr_policy: multistep             # learning rate scheduler [multistep|constant|step]

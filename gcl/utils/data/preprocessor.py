@@ -184,12 +184,12 @@ class AllMeshPreprocessor(Dataset):
     def get_mesh(self, img_path):
         mesh_org_dir = self.mesh_dir + 'render/'
         mesh_org_path = img_path.replace(self.imgs_dir, mesh_org_dir)
-        mesh_org = Image.open(mesh_org_path).convert('RGB')
+        mesh_org = Image.open(mesh_org_path).convert('L')
         all_mesh_nv=[]
         for deg in [45, 90, 135, 180, 225, 270, 315]:
             mesh_nv_dir = self.mesh_dir + 'render_%d/' % deg
             mesh_nv_path = img_path.replace(self.imgs_dir, mesh_nv_dir)
-            all_mesh_nv.append(Image.open(mesh_nv_path).convert('RGB'))
+            all_mesh_nv.append(Image.open(mesh_nv_path).convert('L'))
         return mesh_org, all_mesh_nv
 
     def _get_mesh_item(self, index):

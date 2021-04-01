@@ -48,7 +48,7 @@ class DGNet_Trainer(nn.Module):
 
         # id params
         id_params = list(self.id_net.parameters())
-        lr2 = hyperparameters['lr2']
+        lr2 = hyperparameters['lr_id']
         self.id_opt = torch.optim.SGD([
             {'params': id_params, 'lr': lr2},
         ], weight_decay=hyperparameters['weight_decay'], momentum=0.9, nesterov=True)
@@ -160,6 +160,27 @@ class DGNet_Trainer(nn.Module):
         self.train()
 
         return x_recon, x_nv, x_nv2recon
+
+    def sample_recon(self, x_img, x_mesh):
+        self.eval()
+        # encode
+        s_org = self.gen.encode(x_mesh)
+        feat = self.id_net(x_img, mode='display')
+
+        # decode
+        x_recon = self.gen.decode(s_org, feat)
+
+        return x_recon
+
+    def sample_nv(self, x_img, x_mesh_nv):
+        self.eval()
+        # encode
+        s_nv = self.gen.encode(x_mesh_nv)
+        feat = self.id_net(x_img, mode='display')
+
+        # decode
+        x_nv = self.gen.decode(s_nv, feat)
+        return x_nv
 
     def dis_update(self, x, x_recon, x_nv, x_nv2recon, hyperparameters, num_gpu):
         self.dis_opt.zero_grad()

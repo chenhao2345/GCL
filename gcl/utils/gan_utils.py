@@ -264,7 +264,7 @@ def get_scheduler(optimizer, hyperparameters, iterations=-1):
         # 50000 -- 75000 --
         step = hyperparameters['step_size']
         scheduler = lr_scheduler.MultiStepLR(optimizer,
-                                             milestones=[step, step + 10000],
+                                             milestones=[step],
                                              gamma=hyperparameters['gamma'], last_epoch=iterations)
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', hyperparameters['lr_policy'])

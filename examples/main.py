@@ -13,7 +13,6 @@ import torch.nn.functional as F
 from torch import nn
 from torch.backends import cudnn
 from torch.utils.data import DataLoader
-
 from gcl import datasets
 from gcl import models
 from gcl.trainer import DGNet_Trainer
@@ -212,7 +211,7 @@ def main_worker(args):
 
     # Init memory
     if args.stage == 3:
-        dict_f1, _ = extract_features(model_1, cluster_loader, print_freq=50)
+        dict_f1, _ = extract_features(trainer.id_net, cluster_loader, print_freq=50)
         cf = torch.stack(list(dict_f1.values()))
         trainer.memory.features = F.normalize(cf, dim=1).cuda()
         print('Memory initialized.')
@@ -347,7 +346,6 @@ if __name__ == '__main__':
                         choices=datasets.names())
     parser.add_argument('-b', '--batch-size', type=int, default=16)
     parser.add_argument('-j', '--workers', type=int, default=4)
-    parser.add_argument('--num-clusters', type=int, default=500)
     parser.add_argument('--height', type=int, default=256,
                         help="input height")
     parser.add_argument('--width', type=int, default=128,
@@ -366,8 +364,6 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=0.00035,
                         help="learning rate of new parameters, for pretrained "
                              "parameters it is 10 times smaller than this")
-    parser.add_argument('--momentum', type=float, default=0.9)
-    parser.add_argument('--alpha', type=float, default=0.999)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
     parser.add_argument('--epochs', type=int, default=40)
     parser.add_argument('--iters', type=int, default=400)
