@@ -4,7 +4,7 @@ Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised P
 
 # Qualitative results
 #### Market1501
-<img src="figs/supp1.png" width="200">
+<img src="figs/supp1.png" width="400">
 
 #### Msmt17
 ![demo](figs/supp3.png)
