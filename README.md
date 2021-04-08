@@ -1,6 +1,6 @@
 # Joint Generative and Contrastive Learning for Unsupervised Person Re-identification
 
-This is the official PyTorch implementation of the CVPR 2021 paper "Joint Generative and Contrastive Learning for Unsupervised Person Re-identification"(https://arxiv.org/pdf/2012.09071.pdf)
+This is the official PyTorch implementation of the CVPR 2021 paper [Joint Generative and Contrastive Learning for Unsupervised Person Re-identification](https://arxiv.org/pdf/2012.09071.pdf)
 
 <p float="left">
     <img src="figs/supp1.png" height="350" alt='missing'>
