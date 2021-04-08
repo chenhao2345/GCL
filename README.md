@@ -2,7 +2,6 @@
 
 Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised Person Re-identification](https://arxiv.org/pdf/2012.09071.pdf).
 
-# Qualitative results
 <p float="left">
     <img src="figs/supp1.png" height="350" alt='missing'>
     <img src="figs/supp3.png" height="350" alt='missing'>
