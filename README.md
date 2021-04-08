@@ -4,8 +4,8 @@ Implement of paper:[Joint Generative and Contrastive Learning for Unsupervised P
 
 # Qualitative results
 <p float="left">
-    <img src="figs/supp1.png" height="400" alt='missing'>
-    <img src="figs/supp3.png" height="400" alt='missing'>
+    <img src="figs/supp1.png" height="300" alt='missing'>
+    <img src="figs/supp3.png" height="300" alt='missing'>
 </p>
 
 ## Installation
