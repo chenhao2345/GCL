@@ -4,4 +4,4 @@ python examples/main.py \
     --stage 2 \
     --epochs 40 \
     --init ./examples/logs/JVTC/market/resnet50_market075_epoch00045.pth \
-    --mesh-dir /data/stars/user/yaowang/data/reid/market/
+    --mesh-dir ./examples/mesh/market/
