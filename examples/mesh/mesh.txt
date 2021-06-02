@@ -1,0 +1,6 @@
+Please put your meshes in this folder.
+
+GCL/examples/mesh
+├── DukeMTMC
+├── market
+└── msmt17

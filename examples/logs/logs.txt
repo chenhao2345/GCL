@@ -1,0 +1,8 @@
+Please put your pretrained weights in this folder.
+
+GCL/examples/data
+├── JVTC
+    └── market
+        └── resnet50_market075_epoch00045.pth
+    └── duke
+        └── resnet50_duke075_epoch00040.pth
