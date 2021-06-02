@@ -4,6 +4,6 @@ python examples/main.py \
 --stage 3 \
 --epochs 20 \
 --dataset-target dukemtmc-reid \
---mesh-dir /data/stars/user/yaowang/data/reid/DukeMTMC/ \
+--mesh-dir ./examples/mesh/DukeMTMC/ \
 --rho 0.002 \
 --k1 30
