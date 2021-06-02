@@ -4,4 +4,4 @@ python examples/main.py \
     --stage 2 \
     --epochs 40 \
     --init ./examples/logs/JVTC/msmt/resnet50_msmt085eps4_epoch00099.pth \
-    --mesh-dir /data/stars/user/yaowang/data/reid/msmt17/
+    --mesh-dir ./examples/mesh/msmt17/
