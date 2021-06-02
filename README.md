@@ -27,7 +27,7 @@ cd examples && mkdir data
 Download the raw datasets [DukeMTMC-reID](https://arxiv.org/abs/1609.01775), [Market-1501](https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Scalable_Person_Re-Identification_ICCV_2015_paper.pdf), [MSMT17](https://arxiv.org/abs/1711.08565),
 and then unzip them under the directory like
 ```
-ABMT/examples/data
+GCL/examples/data
 ├── dukemtmc-reid
 │   └── DukeMTMC-reID
 ├── market1501
