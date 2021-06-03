@@ -10,7 +10,7 @@ setup(name='GCL',
       install_requires=[
           'numpy', 'torch==1.2.0', 'torchvision==0.4.0',
           'six', 'h5py', 'Pillow', 'scipy', 'tensorboard', 'opencv-python',
-          'scikit-learn', 'metric-learn', 'faiss-gpu'],
+          'scikit-learn', 'metric-learn', 'faiss-gpu==1.6.3'],
       packages=find_packages(),
       keywords=[
           'Novel View Synthesis'
