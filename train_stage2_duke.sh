@@ -4,4 +4,4 @@ python examples/main.py \
     --stage 2 \
     --epochs 40 \
     --init ./examples/logs/JVTC/duke/resnet50_duke075_epoch00040.pth \
-    --mesh-dir /data/stars/user/yaowang/data/reid/DukeMTMC/
+    --mesh-dir ./examples/mesh/DukeMTMC/

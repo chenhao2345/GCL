@@ -5,6 +5,6 @@ python examples/main.py \
 --stage 3 \
 --epochs 40 \
 --dataset-target market1501 \
---mesh-dir /data/stars/user/yaowang/data/reid/market/ \
+--mesh-dir ./examples/mesh/market/ \
 --rho 0.002 \
 --k1 30
