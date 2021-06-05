@@ -1,4 +1,4 @@
-python examples/main.py \
+CUDA_VISIBLE_DEVICES=0 python examples/main.py \
     --name duke_init_JVTC_unsupervised \
     --dataset-target dukemtmc-reid \
     --stage 2 \

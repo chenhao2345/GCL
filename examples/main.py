@@ -26,7 +26,6 @@ from gcl.utils.faiss_rerank import compute_jaccard_distance
 from gcl.utils.gan_utils import get_config, prepare_sub_folder, write_loss, display_images
 from torch.utils.tensorboard import SummaryWriter
 start_epoch = best_mAP = 0
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 def get_data(name, data_dir):
     root = osp.join(data_dir, name)
@@ -206,14 +205,16 @@ def main_worker(args):
     trainer = DGNet_Trainer(config, model_1, idnet_freeze).cuda()
     iterations = trainer.resume(checkpoint_directory, hyperparameters=config) if args.resume else 0
 
+    trainer = torch.nn.DataParallel(trainer)
+
     # Evaluator
-    evaluator_1 = Evaluator(trainer.id_net)
+    evaluator_1 = Evaluator(trainer.module.id_net)
 
     # Init memory
     if args.stage == 3:
-        dict_f1, _ = extract_features(trainer.id_net, cluster_loader, print_freq=50)
+        dict_f1, _ = extract_features(trainer.module.id_net, cluster_loader, print_freq=50)
         cf = torch.stack(list(dict_f1.values()))
-        trainer.memory.features = F.normalize(cf, dim=1).cuda()
+        trainer.module.memory.features = F.normalize(cf, dim=1).cuda()
         print('Memory initialized.')
 
     _, mAP_1 = evaluator_1.evaluate(test_loader_target, dataset_target.query, dataset_target.gallery, cmc_flag=True)
@@ -224,7 +225,7 @@ def main_worker(args):
             train_loader_target = get_train_loader(dataset_target, args.height, args.width, args.batch_size,
                                              args.workers, num_instances=0, iters=None, trainset=None, mesh_dir=args.mesh_dir)
         else:
-            cf = trainer.memory.features.clone()
+            cf = trainer.module.memory.features.clone()
 
             rerank_dist = compute_jaccard_distance(cf, k1=args.k1, k2=6)
 
@@ -238,7 +239,7 @@ def main_worker(args):
             cluster = DBSCAN(eps=eps, min_samples=4, metric='precomputed', n_jobs=-1)
             labels = cluster.fit_predict(rerank_dist)
 
-            trainer.memory.labels = torch.from_numpy(labels).cuda()
+            trainer.module.memory.labels = torch.from_numpy(labels).cuda()
 
             num_ids = len(set(labels)) - (1 if -1 in labels else 0)
 
@@ -272,36 +273,23 @@ def main_worker(args):
             x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv, feat_nv2recon, \
             f, f_recon, f_nv, f_nv2recon = trainer.forward(x_img, x_mesh, x_mesh_nv)
 
-            if num_gpu > 1:
-                trainer.module.dis_update(x_img, x_recon, x_nv, x_nv2recon, config, num_gpu)
-                if iterations % int(config['gen_iters']) == 0:
-                    trainer.module.gen_update(x_img, x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv,
-                                              feat_nv2recon, f, f_recon, f_nv, f_nv2recon, pid, index, config, iterations, num_gpu)
-            else:
-                trainer.dis_update(x_img, x_recon, x_nv, x_nv2recon, config, num_gpu=1)
-                if iterations % int(config['gen_iters']) == 0:
-                    trainer.gen_update(x_img, x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv, feat_nv2recon, f,
-                                       f_recon, f_nv, f_nv2recon, pid, index, config, iterations, num_gpu=1)
+            trainer.module.dis_update(x_img, x_recon, x_nv, x_nv2recon, config)
+            if iterations % int(config['gen_iters']) == 0:
+                trainer.module.gen_update(x_img, x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv,
+                                          feat_nv2recon, f, f_recon, f_nv, f_nv2recon, pid, index, config, iterations)
+
             torch.cuda.synchronize()
 
             # Dump training stats in log file
             if (iterations + 1) % config['log_iter'] == 0:
                 print("Epoch {} Iteration {}".format(epoch, iterations + 1))
-
-            if num_gpu == 1:
-                write_loss(iterations, trainer, train_writer)
-            else:
                 write_loss(iterations, trainer.module, train_writer)
 
             # Write images
             if (iterations + 1) % config['image_display_iter'] == 0:
                 with torch.no_grad():
-                    if num_gpu > 1:
-                        test_image_outputs = trainer.module.sample(test_display_images, test_display_meshes,
+                    test_image_outputs = trainer.module.sample(test_display_images, test_display_meshes,
                                                                    test_display_meshes_nv)
-                    else:
-                        test_image_outputs = trainer.sample(test_display_images, test_display_meshes,
-                                                            test_display_meshes_nv)
 
                 display_images(test_display_images, test_display_meshes_nv, test_image_outputs, 'test',
                                train_writer, iterations + 1)
@@ -309,12 +297,8 @@ def main_worker(args):
 
             if (iterations + 1) % config['image_display_iter'] == 0:
                 with torch.no_grad():
-                    if num_gpu > 1:
                         image_outputs = trainer.module.sample(train_display_images, train_display_meshes,
                                                               train_display_meshes_nv)
-                    else:
-                        image_outputs = trainer.sample(train_display_images, train_display_meshes,
-                                                       train_display_meshes_nv)
 
                 display_images(train_display_images, train_display_meshes_nv, image_outputs, 'train', train_writer,
                                iterations + 1)
@@ -324,18 +308,15 @@ def main_worker(args):
             # Save network weights
             if args.stage == 2:
                 if (iterations + 1) % config['snapshot_save_iter'] == 0:
-                    if num_gpu > 1:
-                        trainer.module.save(checkpoint_directory, iterations)
-                    else:
-                        trainer.save(checkpoint_directory, iterations)
+                    trainer.module.save(checkpoint_directory, iterations)
 
         if (args.stage==3):
-            trainer.update_learning_rate()
+            trainer.module.update_learning_rate()
             _, mAP_1 = evaluator_1.evaluate(test_loader_target, dataset_target.query, dataset_target.gallery, cmc_flag=True)
-            # if num_gpu > 1:
-            #     trainer.module.save(checkpoint_directory_stage3, iterations)
-            # else:
-            #     trainer.save(checkpoint_directory_stage3, iterations)
+            is_best = mAP_1 > best_mAP
+            best_mAP = max(mAP_1, best_mAP)
+            if is_best:
+                torch.save(trainer.module.id_net.state_dict(), osp.join(checkpoint_directory_stage3, 'model_best.pth'))
 
 
 

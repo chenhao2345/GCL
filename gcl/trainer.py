@@ -20,7 +20,7 @@ import torch.nn.functional as F
 # Load model
 
 class DGNet_Trainer(nn.Module):
-    def __init__(self, hyperparameters, id_net, idnet_freeze, gpu_ids=[0]):
+    def __init__(self, hyperparameters, id_net, idnet_freeze):
         super(DGNet_Trainer, self).__init__()
         lr_g = hyperparameters['lr_g']
         lr_d = hyperparameters['lr_d']
@@ -92,7 +92,7 @@ class DGNet_Trainer(nn.Module):
         return x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv, feat_nv2recon, f, f_recon, f_nv, f_nv2recon
 
     def gen_update(self, x, x_recon, x_nv, x_nv2recon, feat, feat_recon, feat_nv, feat_nv2recon, f, f_recon,
-                   f_nv, f_nv2recon, pid, index, hyperparameters, iterations, num_gpu):
+                   f_nv, f_nv2recon, pid, index, hyperparameters, iterations):
 
         self.gen_opt.zero_grad()
         self.id_opt.zero_grad()
@@ -112,14 +112,9 @@ class DGNet_Trainer(nn.Module):
             self.memory_loss_id = self.memory(F.normalize(f), F.normalize(f_nv), index)
 
         # adv loss
-        if num_gpu > 1:
-            self.loss_gen_adv_recon = self.dis.module.calc_gen_loss(self.dis, x_recon)
-            self.loss_gen_adv_nv = self.dis.module.calc_gen_loss(self.dis, x_nv)
-            self.loss_gen_adv_nv2recon = self.dis.module.calc_gen_loss(self.dis, x_nv2recon)
-        else:
-            self.loss_gen_adv_recon = self.dis.calc_gen_loss(self.dis, x_recon)
-            self.loss_gen_adv_nv = self.dis.calc_gen_loss(self.dis, x_nv)
-            self.loss_gen_adv_nv2recon = self.dis.calc_gen_loss(self.dis, x_nv2recon)
+        self.loss_gen_adv_recon = self.dis.calc_gen_loss(self.dis, x_recon)
+        self.loss_gen_adv_nv = self.dis.calc_gen_loss(self.dis, x_nv)
+        self.loss_gen_adv_nv2recon = self.dis.calc_gen_loss(self.dis, x_nv2recon)
 
         self.loss_gen_total = hyperparameters['gan_w'] * self.loss_gen_adv_recon + \
                               hyperparameters['gan_w'] * self.loss_gen_adv_nv + \
@@ -182,17 +177,12 @@ class DGNet_Trainer(nn.Module):
         x_nv = self.gen.decode(s_nv, feat)
         return x_nv
 
-    def dis_update(self, x, x_recon, x_nv, x_nv2recon, hyperparameters, num_gpu):
+    def dis_update(self, x, x_recon, x_nv, x_nv2recon, hyperparameters):
         self.dis_opt.zero_grad()
         # D loss
-        if num_gpu > 1:
-            self.loss_dis_recon, _ = self.dis.module.calc_dis_loss(self.dis, x_recon.detach(), x)
-            self.loss_dis_nv, _ = self.dis.module.calc_dis_loss(self.dis, x_nv.detach(), x)
-            self.loss_dis_nv2recon, _ = self.dis.module.calc_dis_loss(self.dis, x_nv2recon.detach(), x)
-        else:
-            self.loss_dis_recon, _ = self.dis.calc_dis_loss(self.dis, x_recon.detach(), x)
-            self.loss_dis_nv, _ = self.dis.calc_dis_loss(self.dis, x_nv.detach(), x)
-            self.loss_dis_nv2recon, _ = self.dis.calc_dis_loss(self.dis, x_nv2recon.detach(), x)
+        self.loss_dis_recon, _ = self.dis.calc_dis_loss(self.dis, x_recon.detach(), x)
+        self.loss_dis_nv, _ = self.dis.calc_dis_loss(self.dis, x_nv.detach(), x)
+        self.loss_dis_nv2recon, _ = self.dis.calc_dis_loss(self.dis, x_nv2recon.detach(), x)
 
         self.loss_dis_total = hyperparameters['gan_w'] * self.loss_dis_recon + \
                               hyperparameters['gan_w'] * self.loss_dis_nv2recon + \
@@ -238,16 +228,13 @@ class DGNet_Trainer(nn.Module):
         print('Resume from iteration %d' % iterations)
         return iterations
 
-    def save(self, snapshot_dir, iterations, num_gpu=1):
+    def save(self, snapshot_dir, iterations):
         # Save generators, discriminators, and optimizers
         gen_name = os.path.join(snapshot_dir, 'gen_%08d.pt' % (iterations + 1))
         dis_name = os.path.join(snapshot_dir, 'dis_%08d.pt' % (iterations + 1))
         id_name = os.path.join(snapshot_dir, 'id_%08d.pt' % (iterations + 1))
         opt_name = os.path.join(snapshot_dir, 'optimizer.pt')
         torch.save({'gen': self.gen.state_dict()}, gen_name)
-        # if num_gpu > 1:
-        #     torch.save({'dis': self.dis.module.state_dict()}, dis_name)
-        # else:
         torch.save({'dis': self.dis.state_dict()}, dis_name)
         torch.save({'id': self.id_net.state_dict()}, id_name)
         torch.save({'gen': self.gen_opt.state_dict(), 'id': self.id_opt.state_dict(), 'dis': self.dis_opt.state_dict()}, opt_name)

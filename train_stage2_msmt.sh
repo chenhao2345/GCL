@@ -1,4 +1,4 @@
-python examples/main.py \
+CUDA_VISIBLE_DEVICES=0 python examples/main.py \
     --name msmt_init_JVTC_unsupervised \
     --dataset-target msmt17 \
     --stage 2 \
