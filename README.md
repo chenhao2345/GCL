@@ -36,7 +36,13 @@ GCL/examples/data
 ```
 
 ### Install HMR for Mesh Estimation
-Download our extracted meshes from [Google Drive](https://drive.google.com/drive/folders/1N6c8G5m_RCY2TbwHd9C954qjW6wA8to2?usp=sharing).
+Download our extracted meshes from [Google Drive](https://drive.google.com/drive/folders/1N6c8G5m_RCY2TbwHd9C954qjW6wA8to2?usp=sharing). Unzip them under the directory like
+```
+GCL/examples/mesh
+├── dukeMTMC
+├── market
+└── msmt17
+```
 
 Or refer to [HMR](https://github.com/akanazawa/hmr) ro get meshes for ReID datasets.
 
@@ -44,6 +50,14 @@ Or refer to [HMR](https://github.com/akanazawa/hmr) ro get meshes for ReID datas
 Only support 1 GPU training for the moment.
 ### Stage 1: Warm up identity encoder
 Train a ResNet50 with an unsupervised method, for example, [JVTC](https://github.com/ljn114514/JVTC)(or download our trained models from [Google Drive](https://drive.google.com/drive/folders/1aOSPhVc0MlwSTBVMbY9V46dBS84WpXGq?usp=sharing)) and [MLC](https://github.com/kennethwdk/MLCReID).
+```
+GCL/examples/logs
+└── JVTC
+    └── market
+        └── resnet50_market075_epoch00045.pth
+    └── duke
+        └── resnet50_duke075_epoch00040.pth
+```
 ### Stage 2: Warm up structure encoder and discriminator
 Adjust path for dataset, mesh, pre-trained identity encoder. 
 ```shell
