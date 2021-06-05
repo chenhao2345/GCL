@@ -1,6 +1,8 @@
 # Joint Generative and Contrastive Learning for Unsupervised Person Re-identification
 
-This is the official PyTorch implementation of the CVPR 2021 paper [Joint Generative and Contrastive Learning for Unsupervised Person Re-identification](https://arxiv.org/pdf/2012.09071.pdf)
+This is the official PyTorch implementation of the CVPR 2021 paper [Joint Generative and Contrastive Learning for Unsupervised Person Re-identification](https://arxiv.org/pdf/2012.09071.pdf).
+
+[[Video](https://drive.google.com/file/d/1VCL3loaR3H_d_oel-XCsuKt78pXy06hQ/view?usp=sharing)]   [[Poster](https://drive.google.com/file/d/1p_MnLEf0ZwGEAIYdtfeU1RPpnvawyk3S/view?usp=sharing)]
 
 <p float="left">
     <img src="figs/supp1.png" height="350" alt='missing'>
@@ -47,7 +49,7 @@ GCL/examples/mesh
 Or refer to [HMR](https://github.com/akanazawa/hmr) ro get meshes for ReID datasets.
 
 ## Train GCL
-Only support 1 GPU training for the moment.
+Only support 1 GPU (GPU memory > 20GB) training for the moment.
 ### Stage 1: Warm up identity encoder
 Train a ResNet50 with an unsupervised method, for example, [JVTC](https://github.com/ljn114514/JVTC)(or download our trained models from [Google Drive](https://drive.google.com/drive/folders/1aOSPhVc0MlwSTBVMbY9V46dBS84WpXGq?usp=sharing)) and [MLC](https://github.com/kennethwdk/MLCReID).
 ```
