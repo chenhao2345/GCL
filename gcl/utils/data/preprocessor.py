@@ -116,7 +116,7 @@ class MeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        if 'MSMT17' in root:
+        if 'msmt' in mesh_dir:
             self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
         else:
             self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
@@ -168,7 +168,7 @@ class AllMeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        if 'MSMT17' in root:
+        if 'msmt' in mesh_dir:
             self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
         else:
             self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
