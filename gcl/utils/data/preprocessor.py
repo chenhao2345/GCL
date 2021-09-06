@@ -116,10 +116,10 @@ class MeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        try:
-            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
-        except:
+        if 'msmt' in mesh_dir:
             self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
+        else:
+            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
         self.index = index
 
     def __len__(self):
@@ -168,10 +168,10 @@ class AllMeshPreprocessor(Dataset):
         self.transform = transform
         self.mesh_transform = mesh_transform
         self.mesh_dir = mesh_dir
-        try:
-            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
-        except:
+        if 'msmt' in mesh_dir:
             self.imgs_dir = root + '/' + osp.join(*dataset[0][0].split('/')[:-2]) + '/'  # msmt
+        else:
+            self.imgs_dir = '/'+osp.join(*dataset[0][0].split('/')[:-1])+'/'  # market, duke
         self.index = index
         # print(self.imgs_dir)
 
