@@ -316,6 +316,7 @@ def main_worker(args):
             is_best = mAP_1 > best_mAP
             best_mAP = max(mAP_1, best_mAP)
             if is_best:
+                trainer.module.save(checkpoint_directory, iterations)
                 torch.save(trainer.module.id_net.state_dict(), osp.join(checkpoint_directory_stage3, 'model_best.pth'))
 
 
