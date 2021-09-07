@@ -17,8 +17,10 @@ from gcl.utils.data import transforms as T
 from gcl.utils.data.preprocessor import Preprocessor, AllMeshPreprocessor
 from gcl.utils.serialization import load_checkpoint
 from gcl.utils.gan_utils import get_config
+from gcl.evaluators import Evaluator
 from torchvision import utils
 from tqdm import tqdm
+
 
 start_epoch = best_mAP = 0
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -94,18 +96,6 @@ def create_model(args):
     return model_1
 
 
-# def main():
-# 	args = parser.parse_args()
-#
-# 	if args.seed is not None:
-# 		random.seed(args.seed)
-# 		np.random.seed(args.seed)
-# 		torch.manual_seed(args.seed)
-# 		cudnn.deterministic = True
-#
-# 	main_worker(args)
-
-
 def denormalize_recon(x):
     mean = torch.FloatTensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).cuda()
     std = torch.FloatTensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).cuda()
@@ -113,6 +103,12 @@ def denormalize_recon(x):
 
     return x_recon
 
+def denormalize_mesh(x):
+    mean = torch.FloatTensor([0.5]).cuda()
+    std = torch.FloatTensor([0.5]).cuda()
+    x_recon = (x * std) + mean
+
+    return x_recon
 
 def generate_recon(trainer, train_display_loader, path):
     for i, (img, mesh_org, all_mesh_nv, fname, pid, camid, index) in enumerate(tqdm(train_display_loader)):
@@ -174,18 +170,18 @@ def main():
         output_path = 'outputs/market_init_JVTC_unsupervised/images'
         os.makedirs(output_path, exist_ok=True)
     elif args.dataset_target == 'dukemtmc-reid':
-        checkpoint_path = '/data/stars/user/hchen/Projects/multiview_reid/outputs/duke_init_JVTC_nosource/checkpoints/stage3'
+        checkpoint_path = 'outputs/duke_init_JVTC_unsupervised/checkpoints'
         model_1 = create_model(args)
         trainer = DGNet_Trainer(config, model_1, args.idnet_fix).cuda()
         iterations = trainer.resume(checkpoint_path, hyperparameters=config)
-        output_path = 'outputs/duke_init_JVTC_nosource/images/stage3/test'
+        output_path = 'outputs/duke_init_JVTC_unsupervised/images'
         os.makedirs(output_path, exist_ok=True)
     elif args.dataset_target == 'msmt17':
-        checkpoint_path = '/data/stars/user/hchen/Projects/multiview_reid/outputs/msmt_init_JVTC_msmt/checkpoints/stage3'
+        checkpoint_path = 'outputs/msmt_init_JVTC_unsupervised/checkpoints'
         model_1 = create_model(args)
         trainer = DGNet_Trainer(config, model_1, args.idnet_fix).cuda()
         iterations = trainer.resume(checkpoint_path, hyperparameters=config)
-        output_path = 'outputs/msmt_init_JVTC_msmt/images/stage3/test'
+        output_path = 'outputs/msmt_init_JVTC_unsupervised/images'
         os.makedirs(output_path, exist_ok=True)
     else:
         raise NotImplementedError
@@ -194,6 +190,11 @@ def main():
     print('==> preparing dataset')
     # Create data loaders
     dataset_target = get_data(args.dataset_target, args.data_dir)
+
+    # # evaluation
+    # test_loader_target = get_test_loader(dataset_target, args.height, args.width, 128, args.workers)
+    # evaluator_1 = Evaluator(model_1)
+    # _, mAP_1 = evaluator_1.evaluate(test_loader_target, dataset_target.query, dataset_target.gallery, cmc_flag=True)
 
     # display set
     train_display_loader = get_display_loader(dataset_target, args.height, args.width, args.batch_size, args.workers, testset=dataset_target.train, mesh_dir=args.mesh_dir)
@@ -236,8 +237,9 @@ if __name__ == '__main__':
     parser.add_argument('--stage', type=int, default=1)
 
     # path
-    parser.add_argument('--data-dir', type=str, metavar='PATH', default='/data/stars/user/hchen/data')
-    parser.add_argument('--mesh-dir', type=str, metavar='PATH', default='/data/stars/user/yaowang/data/reid/market/')
+    working_dir = osp.dirname(osp.abspath(__file__))
+    parser.add_argument('--data-dir', type=str, metavar='PATH', default=osp.join(working_dir, 'data'))
+    parser.add_argument('--mesh-dir', type=str, metavar='PATH', default='./examples/mesh/market/')
 
     # gan config
     parser.add_argument('--config', type=str, default='configs/latest.yaml', help='Path to the config file.')

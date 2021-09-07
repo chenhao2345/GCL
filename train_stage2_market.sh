@@ -1,5 +1,5 @@
-CUDA_VISIBLE_DEVICES=0 python examples/main.py \
-    --name market_JVTC_unsupervised \
+python examples/main.py \
+    --name market_init_JVTC_unsupervised \
     --dataset-target market1501 \
     --stage 2 \
     --epochs 40 \
