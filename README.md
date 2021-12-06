@@ -84,10 +84,12 @@ tensorboard --logdir logs/market_init_JVTC_unsupervised/stage3/
 
 ## Citation
 ```bibtex
-@article{chen2020joint,
-  title={Joint Generative and Contrastive Learning for Unsupervised Person Re-identification},
-  author={Chen, Hao and Wang, Yaohui and Lagadec, Benoit and Dantcheva, Antitza and Bremond, Francois},
-  journal={arXiv preprint arXiv:2012.09071},
-  year={2020}
+@InProceedings{Chen_2021_CVPR,
+    author    = {Chen, Hao and Wang, Yaohui and Lagadec, Benoit and Dantcheva, Antitza and Bremond, Francois},
+    title     = {Joint Generative and Contrastive Learning for Unsupervised Person Re-Identification},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2021},
+    pages     = {2004-2013}
 }
 ```
